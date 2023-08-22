@@ -13,7 +13,7 @@ router.put('/:id', studentController.updateStudentClass);
 router.delete('/:id', studentController.deleteStudent);
 
 // Define GET route for reading all students in a class with standard and division
-router.get('/by-class/:classId', studentController.getStudentsByClass);
+router.get('/:standard/:division', studentController.getStudentsByClassStandardDivision);
 
 // Define GET route for reading all students in a standard
 router.get('/by-standard/:standard', studentController.getStudentsByStandard);

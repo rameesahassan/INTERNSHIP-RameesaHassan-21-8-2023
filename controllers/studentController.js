@@ -80,23 +80,24 @@ exports.deleteStudent = async (req, res) => {
     }
   };
 
-  //Read all students in a class
+  //Read all students in a class with standard and division
 
-exports.getStudentsByClass = async (req, res) => {
-  try {
+exports.getStudentsByClassStandardDivision = async (req, res) => {
+    try {
+      const standard= req.params.standard;
+      const division=req.params.division;
+  
+      // Find all students in the specified class based on standard and division
+     const students = await Student.find({ 'classId.standard': standard, 'classId.division': division });
     
-   const classId = req.params.classId;
-
-    // Find all students with the given standard and division
-    
-    const students = await Student.find({ classId: classId });
-
-    res.status(200).json(students);
-  } catch (error) {
-    console.error('Error fetching students by class:', error);
-    res.status(500).json({ error: 'Error fetching students by class' });
-  }
-};
+      res.status(200).json(students);
+      
+    } catch (error) {  
+      console.error('Error getting students by class, standard, and division:', error);
+      res.status(500).json({ error: 'Error getting students by class, standard, and division' });
+    }
+  };
+  
 
 //Read all students in a standard
 
@@ -106,7 +107,7 @@ exports.getStudentsByStandard = async (req, res) => {
     const standard = req.params.standard;
     
     // Find all students in the specified standard
-    const students = await Student.find({ standard: standard });
+    const students = await Student.find({ standard:standard });
 
 
     res.status(200).json(students);
