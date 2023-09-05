@@ -84,13 +84,30 @@ exports.deleteStudent = async (req, res) => {
 
 exports.getStudentsByClassStandardDivision = async (req, res) => {
     try {
+      const classId=req.params.id;
       const standard= req.params.standard;
       const division=req.params.division;
-  
-      // Find all students in the specified class based on standard and division
-     const students = await Student.find({ 'classId.standard': standard, 'classId.division': division });
-    
-      res.status(200).json(students);
+
+      const students=await Student.aggregate([
+  {
+    $lookup: {
+      from: 'classes',
+      localField: 'classId',
+      foreignField: '_id',
+      as: 'classId'
+    }
+  },
+  {
+    $unwind: '$classId'
+  },
+  {
+    $match: {
+      'classId.standard': standard,
+      'classId.division': division
+    }
+  }
+]);      res.status(200).json(students);
+
       
     } catch (error) {  
       console.error('Error getting students by class, standard, and division:', error);

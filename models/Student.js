@@ -10,7 +10,11 @@ const studentSchema = new mongoose.Schema({
   mobileno:{
     type :String
   },
-  classId: mongoose.Schema.Types.ObjectId,// Defines the field as an ObjectId reference
+  classId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Class'
+  },
+  // Defines the field as an ObjectId reference
 });
 
 module.exports = mongoose.model('Student', studentSchema);
