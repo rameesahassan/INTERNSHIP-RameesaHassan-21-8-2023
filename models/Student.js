@@ -12,7 +12,7 @@ const studentSchema = new mongoose.Schema({
   },
   classId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Class'
+    ref: 'Class',
   },
   // Defines the field as an ObjectId reference
 });

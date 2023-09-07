@@ -1,5 +1,6 @@
 const Student = require('../models/Student');//import the Student model
 const Class = require('../models/Class'); // Import the Class model
+const { ObjectId } = require('mongodb');
 
 
 exports.createStudent = async (req, res) => {
@@ -88,30 +89,19 @@ exports.getStudentsByClassStandardDivision = async (req, res) => {
       const standard= req.params.standard;
       const division=req.params.division;
 
-      const students=await Student.aggregate([
-  {
-    $lookup: {
-      from: 'classes',
-      localField: 'classId',
-      foreignField: '_id',
-      as: 'classId'
-    }
-  },
-  {
-    $unwind: '$classId'
-  },
-  {
-    $match: {
-      'classId.standard': standard,
-      'classId.division': division
-    }
-  }
-]);      res.status(200).json(students);
+const classDocument = await Class.findOne({ standard, division });
 
-      
+    if (!classDocument) {
+      return res.status(404).json({ error: 'Class not found' });
+    }
+
+    // Use the classDocument _id to find students with the same classId
+    const students = await Student.find({ classId: classDocument._id });
+
+    res.status(200).json(students);
     } catch (error) {  
       console.error('Error getting students by class, standard, and division:', error);
-      res.status(500).json({ error: 'Error getting students by class, standard, and division' });
+      res.status(500).json({ error: error.message});
     }
   };
   
